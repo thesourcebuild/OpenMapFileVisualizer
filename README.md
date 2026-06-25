@@ -2,6 +2,18 @@
 
 A standalone Python utility for firmware memory analysis. It parses linker map files from major toolchains—including GCC/Clang, IAR, and Keil—and generates a comprehensive, single-file HTML report detailing memory regions, section composition, and symbol statistics.
 
+## Table of Contents
+
+- [Report sections](#report-sections)
+- [Screenshots](#screenshots)
+- [Notes](#notes)
+- [Project setup](#project-setup)
+- [Usage](#usage)
+- [Standalone Executable](#standalone-executable)
+- [Contributions](#contributions)
+- [License](#license)
+- [Author](#author)
+
 ## Report sections
 
 The HTML report keeps the full dashboard layout:
@@ -19,6 +31,31 @@ The HTML report keeps the full dashboard layout:
 - Source-file estimate
 - Largest symbols/functions when symbol-size data is present
 - Linker script info — when a linker script is supplied (`--linker-file`), shows parsed memory regions, output sections, input section placements, heap/stack sizes, and the raw linker source in a tabbed viewer
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="images/ROM_Boot_image_non-volatile_capacity.png" alt="ROM capacity" width="400"><br><em>ROM / Boot capacity</em></td>
+    <td align="center"><img src="images/RAM_capacity.png" alt="RAM capacity" width="400"><br><em>RAM capacity</em></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/ROM_by_category.png" alt="ROM by category" width="400"><br><em>ROM by category</em></td>
+    <td align="center"><img src="images/RAM_by_category.png" alt="RAM by category" width="400"><br><em>RAM by category</em></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/Category_composition.png" alt="Category composition" width="400"><br><em>Category composition</em></td>
+    <td align="center"><img src="images/Physical_address_space_map.png" alt="Address space map" width="400"><br><em>Physical address space map</em></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/ROM_vs_RAM_bubble_chart.png" alt="ROM vs RAM bubble chart" width="400"><br><em>ROM vs RAM bubble chart</em></td>
+    <td align="center"><img src="images/Memory_treemap.png" alt="Memory treemap" width="400"><br><em>Memory treemap</em></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/Linker_section_breakdown.png" alt="Linker section breakdown" width="400"><br><em>Linker section breakdown</em></td>
+    <td align="center"><img src="images/Largest_code_modules.png" alt="Largest code modules" width="400"><br><em>Largest code modules</em></td>
+  </tr>
+</table>
 
 ## Notes
 

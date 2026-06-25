@@ -506,7 +506,7 @@ def render_html(
     if chip_hints:
         chip_config_name = chip_hints[0].partition("=")[2]
 
-    basename = os.path.basename(analysis.input_file)
+    basename = os.path.splitext(os.path.basename(analysis.input_file))[0]
     parser_hint = (
         ", ".join(analysis.format_hints)
         if analysis.format_hints
