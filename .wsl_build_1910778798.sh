@@ -1,0 +1,1 @@
+cd '/mnt/i/projects/openmapfilevisualizer/openmapvisualizer' && bash scripts/installer/create_setup.sh

@@ -34,13 +34,24 @@ from pathlib import Path
 from typing import Optional, Sequence
 
 
+from version import __version__
+
 from analyzer import SUPPORTED_FORMATS, parse_map, render_html, to_jsonable
 from analyzer.stats import build_module_rows, compute_stats
 from analyzer.utils import parse_byte_size
 
 
+class _VersionHelpParser(argparse.ArgumentParser):
+    def format_help(self):
+        return f"Version: {__version__}\n\n{super().format_help()}"
+
+    def error(self, message):
+        sys.stderr.write(f"Version: {__version__}\n\n")
+        super().error(message)
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    ap = argparse.ArgumentParser(description="Generate a detailed HTML report from a linker map file.")
+    ap = _VersionHelpParser(description="Generate a detailed HTML report from a linker map file.")
+    ap.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     ap.add_argument("mapfile", type=Path, help="Input .map file")
     ap.add_argument("-o", "--output", type=Path, help="Output HTML path. Defaults to <mapfile>.html")
     ap.add_argument("--json", dest="json_out", type=Path, help="Optional JSON summary output")

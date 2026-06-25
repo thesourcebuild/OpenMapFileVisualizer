@@ -127,8 +127,8 @@ When you pass `--csv`, the tool writes a combined CSV export (replacing the inpu
 If you wish to distribute the analyzer as a standalone executable without relying on a Python environment, you can use PyInstaller:
 
 1. You can run the setup scripts from the `scripts/installer` directory to automatically install dependencies and compile the `.exe`:
-   - Windows: `scripts\installer\create-setup.bat`
-   - Linux/macOS: `./scripts/installer/create-setup.sh`
+   - Windows: `scripts\installer\create_setup.bat`
+   - Linux/macOS: `./scripts/installer/create_setup.sh`
 
 2. Alternatively, if you want to run it manually:
 

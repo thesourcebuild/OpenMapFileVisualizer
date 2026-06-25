@@ -9,7 +9,7 @@ if ($Help -or $args -contains '--help' -or $args -contains '-h') {
     Write-Host @"
 create_setup_wsl.ps1 — Build Linux standalone executable via WSL
 
-Delegates to create-setup.sh inside WSL Ubuntu.
+Delegates to create_setup.sh inside WSL Ubuntu.
 
 Usage:
     scripts\installer\create_setup_wsl                         (default Ubuntu distro)
@@ -48,7 +48,7 @@ $tmpDrive = (Split-Path -Qualifier $tmpFile).TrimEnd(':').ToLower()
 $tmpPath = (Split-Path -NoQualifier $tmpFile) -replace '\\', '/'
 $tmpWsl = "/mnt/$tmpDrive$tmpPath"
 try {
-    "cd '$WslPath' && bash scripts/installer/create-setup.sh" | Out-File -FilePath $tmpFile -Encoding ASCII -NoNewline
+    "cd '$WslPath' && bash scripts/installer/create_setup.sh" | Out-File -FilePath $tmpFile -Encoding ASCII -NoNewline
     Write-Host "Starting WSL build..."
     wsl -d $WslDist -- bash $tmpWsl
     if ($LASTEXITCODE -ne 0) {
