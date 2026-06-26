@@ -7,7 +7,7 @@ SECTION_CLASS_RULES = [
     ("code", (".text", ".init", ".fini", ".isr_vector", ".vectors", ".itcm")),
     ("rodata", (".rodata", ".const", ".ARM.extab", ".ARM.exidx", ".eh_frame", ".gcc_except_table")),
     ("data", (".data", ".ramfunc", ".fastcode", ".dtcm")),
-    ("bss", (".bss", "COMMON", ".noinit", ".heap", ".stack")),
+    ("bss", (".bss", "COMMON", ".noinit", ".heap", ".stack", ".dma_buffer")),
     ("debug", (".debug", ".comment", ".note", ".stab", ".symtab", ".strtab", ".line", ".ARM.attributes", ".xtensa.info")),
 ]
 
