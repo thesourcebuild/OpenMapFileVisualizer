@@ -10,6 +10,7 @@ from typing import Any, Dict, List
 import jinja2
 
 from .models import Analysis, Contribution, MemoryRegion
+from .section_rules import MODULE_CLASS_RULES
 from .stats import build_module_rows, compute_stats
 from .utils import nice_size, object_name, region_kind as shared_region_kind
 
@@ -25,77 +26,9 @@ def size_with_hex(value: int) -> str:
 def classify_module(name: str) -> str:
     """Small, transparent embedded-oriented grouping used only for dashboard views."""
     lowered = (name or "").lower()
-    if any(
-        t in lowered
-        for t in (
-            "lwip",
-            "tcp",
-            "udp",
-            "ip4",
-            "eth",
-            "mqtt",
-            "dhcp",
-            "dns",
-            "sntp",
-            "smtp",
-            "tftp",
-            "socket",
-            "arp",
-            "netbios",
-        )
-    ):
-        return "Networking"
-    if any(
-        t in lowered
-        for t in (
-            "xil",
-            "xemac",
-            "xadc",
-            "qspi",
-            "uart",
-            "iic",
-            "gpio",
-            "sdps",
-            "ttc",
-            "scugic",
-            "bsp",
-            "driver",
-            "phy",
-        )
-    ):
-        return "Drivers / BSP"
-    if any(
-        t in lowered
-        for t in ("fatfs", "ff.", "ff_", "xilffs", "diskio", "filesystem", "file")
-    ):
-        return "File system"
-    if any(
-        t in lowered
-        for t in ("freertos", "rtos", "task", "queue", "semphr", "cmsis", "arm_")
-    ):
-        return "RTOS / DSP"
-    if any(
-        t in lowered
-        for t in ("libc", "libm", "libgcc", "crt", "printf", "malloc", "newlib")
-    ):
-        return "Runtime / C library"
-    if any(
-        t in lowered
-        for t in (
-            "app",
-            "cli",
-            "table",
-            "control",
-            "handler",
-            "manager",
-            "database",
-            "ota",
-            "fdr",
-        )
-    ):
-        return "Application"
-    if any(t in lowered for t in (".a(", ".lib(")):
-        return "Libraries / middleware"
+    for category, keywords in MODULE_CLASS_RULES.items():
+        if any(t in lowered for t in keywords):
+            return category
     return "Other"
 
 
@@ -208,7 +141,7 @@ def render_html(
 
     # --- Capacity cards (passed as dicts; template renders via macro) ---
     flash_card = {
-        "title": "ROM/Boot image/non-volatile capacity",
+        "title": "Flash / ROM",
         "used": flash_used,
         "cap": flash_cap,
         "percent": 100.0 * flash_used / flash_cap if flash_cap else 0.0,

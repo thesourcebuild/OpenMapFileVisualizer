@@ -3,13 +3,7 @@ from __future__ import annotations
 import os
 import re
 
-SECTION_CLASS_RULES = [
-    ("code", (".text", ".init", ".fini", ".isr_vector", ".vectors", ".itcm")),
-    ("rodata", (".rodata", ".const", ".ARM.extab", ".ARM.exidx", ".eh_frame", ".gcc_except_table")),
-    ("data", (".data", ".ramfunc", ".fastcode", ".dtcm")),
-    ("bss", (".bss", "COMMON", ".noinit", ".heap", ".stack", ".dma_buffer")),
-    ("debug", (".debug", ".comment", ".note", ".stab", ".symtab", ".strtab", ".line", ".ARM.attributes", ".xtensa.info")),
-]
+from .section_rules import SECTION_RULES, REGION_KIND_RULES
 
 SIZE_SUFFIXES = {
     "k": 1024,
@@ -68,33 +62,23 @@ def section_class(section: str) -> str:
     s = (section or "").strip()
     sl = s.lower()
     compact = sl.replace(" ", "")
-    if compact in {"code", "text", "thumb", "arm", "function"}:
-        result = "code"
-    elif compact in {"rodata", "readonly", "const", "ro", "ro-data"}:
-        result = "rodata"
-    elif compact in {"rwdata", "data", "rw", "rw-data"}:
-        result = "data"
-    elif compact in {"zidata", "bss", "zi", "zero", "zero-initialized"}:
-        result = "bss"
-    elif compact in {"debug", "debugdata"}:
-        result = "debug"
-    else:
-        result = "other"
-        for name, prefixes in SECTION_CLASS_RULES:
-            if any(sl == prefix.lower() or sl.startswith(prefix.lower()) for prefix in prefixes):
-                result = name
-                break
-        if result == "other":
-            for name, suffixes in [
-                ("code", (".text", ".text_end", ".vectors", ".force_slow")),
-                ("rodata", (".rodata", ".literal", ".appdesc")),
-                ("data", (".data", "_reserved", ".force_fast")),
-                ("bss", (".bss", ".noload")),
-            ]:
-                if any(sl.endswith(suffix) for suffix in suffixes):
-                    result = name
-                    break
-    return result
+
+    # Try keyword matching first
+    for category, keywords in SECTION_RULES["keywords"].items():
+        if compact in keywords:
+            return category
+
+    # Try prefix matching
+    for name, prefixes in SECTION_RULES["prefixes"]:
+        if any(sl == prefix.lower() or sl.startswith(prefix.lower()) for prefix in prefixes):
+            return name
+
+    # Try suffix matching
+    for name, suffixes in SECTION_RULES["suffixes"]:
+        if any(sl.endswith(suffix) for suffix in suffixes):
+            return name
+
+    return "other"
 
 
 def normalize_source(src: str) -> str:
@@ -146,34 +130,22 @@ def source_file(source: str) -> str:
 
 def region_kind(name: str, attrs: str = "", origin: int = 0, length: int = 0) -> str:
     lowered = (name or "").lower()
-    kind = "other"
 
-    if any(
-        t in lowered
-        for t in (
-            "flash", "rom", "qspi", "nor", "nand", "emmc",
-            "spi", "boot", "linear", "program",
-        )
-    ):
-        kind = "flash"
-    elif any(
-        t in lowered
-        for t in (
-            "ram", "sram", "ddr", "ocm", "tcm", "dram", "bram",
-            "ps7_ram", "ps7_ddr", "noncache",
-        )
-    ):
-        kind = "ram"
-    else:
-        attrs_lower = (attrs or "").lower()
-        if "w" in attrs_lower:
-            kind = "ram"
-        elif "!" in attrs_lower:
-            parts = attrs_lower.split("!", 1)
-            if len(parts) > 1 and ("r" in parts[1] or "x" in parts[1]):
-                kind = "ram"
-        elif "x" in attrs_lower or "r" in attrs_lower:
-            kind = "flash"
+    # Check keyword matching
+    for kind, rules in REGION_KIND_RULES.items():
+        if any(t in lowered for t in rules["keywords"]):
+            return kind
 
-    return kind
+    # Check attribute matching
+    attrs_lower = (attrs or "").lower()
+    if "w" in attrs_lower:
+        return "ram"
+    elif "!" in attrs_lower:
+        parts = attrs_lower.split("!", 1)
+        if len(parts) > 1 and ("r" in parts[1] or "x" in parts[1]):
+            return "ram"
+    elif "x" in attrs_lower or "r" in attrs_lower:
+        return "flash"
+
+    return "other"
 

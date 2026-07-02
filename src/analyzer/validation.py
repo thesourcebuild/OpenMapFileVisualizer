@@ -93,7 +93,9 @@ def detect_layout_issues(analysis: Analysis) -> Tuple[List[str], Dict[str, Any]]
     for c in analysis.contributions:
         if c.address is None or c.size <= 0 or c.source == "<region total>":
             continue
-        if section_class(c.section) == "debug":
+        # Skip non-allocated sections (debug, metadata, etc. - not loaded into memory)
+        kind = c.kind or section_class(c.section)
+        if kind == "debug":
             continue
         valid_contribs.append(c)
     valid_contribs.sort(key=lambda x: x.address)

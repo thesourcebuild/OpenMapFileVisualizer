@@ -1,18 +1,20 @@
-# Mapfile Analyzer
+# OpenMapFileAnalyzer
 
 A standalone Python utility for firmware memory analysis. It parses linker map files from major toolchains—including GCC/Clang, IAR, and Keil—and generates a comprehensive, single-file HTML report detailing memory regions, section composition, and symbol statistics.
 
 ## Table of Contents
 
-- [Report sections](#report-sections)
-- [Screenshots](#screenshots)
-- [Notes](#notes)
-- [Project setup](#project-setup)
-- [Usage](#usage)
-- [Standalone Executable](#standalone-executable)
-- [Contributions](#contributions)
-- [License](#license)
-- [Author](#author)
+- [OpenMapFileAnalyzer](#openmapfileanalyzer)
+  - [Table of Contents](#table-of-contents)
+  - [Report sections](#report-sections)
+  - [Screenshots](#screenshots)
+  - [Notes](#notes)
+  - [Project setup](#project-setup)
+  - [Usage](#usage)
+  - [Standalone Executable](#standalone-executable)
+  - [Contributions](#contributions)
+  - [License](#license)
+  - [Author](#author)
 
 ## Report sections
 
@@ -83,31 +85,38 @@ pip install -e .
 
 ## Usage
 
+After installing with `pip install -e .`, run the analyzer as:
+
 ```bash
-python openmapfileanalzyer.py firmware.map -o firmware_report.html
-python openmapfileanalzyer.py firmware.map --linker-file lscript.ld
-python openmapfileanalzyer.py firmware.elf -o firmware_report.html
+openmapfile-analyzer firmware.map -o firmware_report.html
+openmapfile-analyzer firmware.map --linker-file lscript.ld
+openmapfile-analyzer firmware.elf -o firmware_report.html
 
-python openmapfileanalzyer.py firmware.map --markdown
-python openmapfileanalzyer.py firmware.map --json firmware_report.json
-python openmapfileanalzyer.py firmware.map --csv
+openmapfile-analyzer firmware.map --markdown
+openmapfile-analyzer firmware.map --json firmware_report.json
+openmapfile-analyzer firmware.map --csv
 
-python openmapfileanalzyer.py firmware.map --rom-capacity 2MiB --ram-capacity 512KiB
-python openmapfileanalzyer.py firmware.map --rom-capacity 0x200000 --ram-capacity 0x80000
+openmapfile-analyzer firmware.map --rom-capacity 2MiB --ram-capacity 512KiB
+openmapfile-analyzer firmware.map --rom-capacity 0x200000 --ram-capacity 0x80000
+```
 
+Or run directly from source:
+
+```bash
+python src/openmapfileanalyzer.py firmware.map -o firmware_report.html
 ```
 
 Parser profile selection is optional:
 
 ```bash
-python openmapfileanalzyer.py firmware.map --map-format auto
-python openmapfileanalzyer.py firmware.map --map-format gnu
-python openmapfileanalzyer.py firmware.map --map-format keil
-python openmapfileanalzyer.py firmware.map --map-format arm
-python openmapfileanalzyer.py firmware.map --map-format iar
-python openmapfileanalzyer.py firmware.map --map-format ti
-python openmapfileanalzyer.py firmware.map --map-format msvc
-python openmapfileanalzyer.py firmware.map --map-format generic
+openmapfile-analyzer firmware.map --map-format auto
+openmapfile-analyzer firmware.map --map-format gnu
+openmapfile-analyzer firmware.map --map-format keil
+openmapfile-analyzer firmware.map --map-format arm
+openmapfile-analyzer firmware.map --map-format iar
+openmapfile-analyzer firmware.map --map-format ti
+openmapfile-analyzer firmware.map --map-format msvc
+openmapfile-analyzer firmware.map --map-format generic
 ```
 
 **Binary ELF Files**: You can pass binary ELF files (`.elf`, `.axf`, `.o`) directly instead of text map files. The analyzer leverages `pyelftools` to parse the `.symtab` section and extract `STT_FILE`, `STT_FUNC`, and `STT_OBJECT` symbol sizes natively without relying on map text layout.

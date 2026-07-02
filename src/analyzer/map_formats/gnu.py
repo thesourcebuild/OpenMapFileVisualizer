@@ -106,7 +106,7 @@ def parse(lines: Sequence[str], analysis: Analysis, min_size: int = 0) -> None:
 
     active_contrib = None
     active_symbols = []
-    
+
     pending_section = None
     pending_line_no = 0
     parent_section_end = None
@@ -187,7 +187,7 @@ def parse(lines: Sequence[str], analysis: Analysis, min_size: int = 0) -> None:
             addr = parse_int(match.group("addr"))
             size = parse_int(match.group("size"))
             source = "<section total>"
-            
+
             parent_section_end = addr + size
 
             active_contrib = Contribution(
